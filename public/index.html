@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>校青协志愿时长查询</title>
+    <style>
+        body {
+            margin: 0px;
+        }
+
+        .container {
+            height: 100vh;
+            width: 100%;
+            background-color: #efeff4;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            overflow: auto;
+            padding: 0 4vw;
+        }
+
+        .logo_box {
+            width: 26.66667vw;
+            height: 26.66667vw;
+            display: flex;
+            text-align: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 50%;
+            margin: 5.33333vw auto;
+            background-color: #fff;
+            flex-shrink: 0;
+        }
+
+        .message {
+            background-color: #fff;
+            border-radius: 2.66667vw;
+            margin-bottom: 5.33333vw;
+            font-size: 3.73333vw;
+            line-height: 5.33333vw;
+            box-shadow: 0px 15px 15px -10px rgb(216, 219, 237);
+        }
+
+        .timeMessage {
+            background-color: #fff;
+            border-radius: 2.66667vw;
+            margin-bottom: 5.33333vw;
+            font-size: 3.73333vw;
+            line-height: 5.33333vw;
+            padding: 5.33333vw;
+            box-shadow: 0px 15px 15px -10px rgb(216, 219, 237);
+        }
+
+        .project {
+            height: 100%;
+            width: 75%;
+            padding-left: 15px;
+        }
+
+        .time {
+            height: 100%;
+            width: 25%;
+        }
+
+        .caption {
+            color: #000;
+            font-weight: 500;
+            font-size: 8vw;
+            display: flex;
+            justify-content: center;
+            padding-bottom: 10px;
+        }
+
+        .title {
+            color: #000;
+            font-weight: 600;
+            line-height: 10.66667vw;
+            border-bottom: 1px solid #efeff4;
+            padding: 0 5.33333vw;
+        }
+
+        .title2 {
+            color: #000;
+            font-weight: 600;
+            line-height: 10.66667vw;
+        }
+
+        .box {
+            padding: 2.66667vw 5.33333vw;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="app">
+        <!-- 标志 -->
+        <div class="logo_box">
+            <img src="./logo.jpg" height="100%">
+        </div>
+        <div class="caption">时长查询</div>
+        <!-- 个人信息 -->
+        <div class="message">
+            <div class="title">我的志愿服务记录</div>
+            <div class="box">
+                <div>姓名：{{Sname}}</div>
+                <div>学院：{{College}}</div>
+                <div>班级：{{Class}}</div>
+                <div>学号：{{Number}}</div>
+                <div>总时长：{{totalTime}}</div>
+            </div>
+
+        </div>
+        <!-- 志愿时长信息 -->
+        <div class="timeMessage" v-for="message in todos">
+            <div>周数：{{message.Weeks}}</div>
+            <div>服务类别：{{message.Category}}</div>
+            <div>服务名称：{{message.proName}}</div>
+            <div>单项时长：{{message.Time}}</div>
+        </div>
+    </div>
+    </div>
+
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+        const app = new Vue({
+            el: "#app",
+            data: {
+                //个人信息
+                Sname: "",
+                College: "",
+                Class: "",
+                Number: "A03190078",
+                totalTime: 0,
+                // 志愿时长信息
+                Weeks: "",
+                Category: "",
+                proName: "",
+                Time: "",
+                todos: [],
+            },
+            mounted() {
+                this.open()
+            },
+            methods: {
+                open() {
+                    axios
+                        .post('/login', { Number: this.Number })
+                        .then((res) => {
+                            console.log(res);
+                            this.todos = res.data
+                            this.Sname = this.todos[0]['Sname']
+                            this.College = this.todos[0]['College']
+                            this.Class = this.todos[0]['Class']
+                            for (let i = 0; i < this.todos.length; i++) {
+                                this.totalTime = this.todos[i]['Time'] * 1 + this.totalTime * 1
+                            }
+                            console.log(this.todos.length)
+                        });
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
